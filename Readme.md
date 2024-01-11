@@ -1,7 +1,7 @@
 # Личный проект «Шесть городов»
 
 * Студент: [Юрий Багдасарян](https://up.htmlacademy.ru/nodejs-api/6/user/806047).
-* Наставник: `Неизвестно`.
+* Наставник: [Rail Sakhaviev] (https://htmlacademy.ru/profile/id1331891).
 
 ---
 
