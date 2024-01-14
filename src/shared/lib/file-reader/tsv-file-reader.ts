@@ -51,34 +51,30 @@ export class TSVFileReader implements FileReader {
         commentsCount,
         latitude,
         longitude
-      ]) => {
-
-        console.log(City, conveniences);
-        return ({
-          title,
-          description,
-          postDate: new Date(postDate),
-          city: City[city as keyof typeof City],
-          previewImage,
-          propertyImages: propertyImages.split(';'),
-          isPremium: Boolean(isPremium),
-          isFavorite: Boolean(isFavorite),
-          rating: Number.parseFloat(rating),
-          housingType: Housing[housingType as keyof typeof Housing],
-          roomsNumber: Number.parseInt(roomsNumber, 10),
-          guestsNumber: Number.parseInt(guestsNumber, 10),
-          price: Number.parseInt(price, 10),
-          conveniences: conveniences.split(';').filter(Boolean).map((conv) => Conveniences[conv as keyof typeof Conveniences]),
-          user: {
-            name,
-            email,
-            avatar: avatar as AvatarExtention,
-            password,
-            userType: UserType[userType as keyof typeof UserType]
-          },
-          commentsCount: Number.parseInt(commentsCount, 10),
-          coordinates: { latitude: Number.parseFloat(latitude), longitude: Number.parseFloat(longitude) },
-        });
-      });
+      ]) => ({
+        title,
+        description,
+        postDate: new Date(postDate),
+        city: City[city as keyof typeof City],
+        previewImage,
+        propertyImages: propertyImages.split(';'),
+        isPremium: Boolean(isPremium),
+        isFavorite: Boolean(isFavorite),
+        rating: Number.parseFloat(rating),
+        housingType: Housing[housingType as keyof typeof Housing],
+        roomsNumber: Number.parseInt(roomsNumber, 10),
+        guestsNumber: Number.parseInt(guestsNumber, 10),
+        price: Number.parseInt(price, 10),
+        conveniences: conveniences.split(';').filter(Boolean).map((conv) => Conveniences[conv as keyof typeof Conveniences]),
+        user: {
+          name,
+          email,
+          avatar: avatar as AvatarExtention,
+          password,
+          userType: UserType[userType as keyof typeof UserType]
+        },
+        commentsCount: Number.parseInt(commentsCount, 10),
+        coordinates: { latitude: Number.parseFloat(latitude), longitude: Number.parseFloat(longitude) },
+      }));
   }
 }
