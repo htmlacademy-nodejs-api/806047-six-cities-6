@@ -2,9 +2,8 @@ import { FileReader } from './file-reader.interface.js';
 import { readFileSync } from 'node:fs';
 import { RentalOffer } from '../../types/rental-offer.type.js';
 import { City } from '../../types/city.enum.js';
-import { AvatarExtention } from '../../types/user.type.js';
-import { Housing } from '../../types/housing-type.enum.js';
-import { Conveniences } from '../../types/conveniences.enum.js';
+import { HousingType } from '../../types/housing-type.enum.js';
+import { Convenience } from '../../types/conveniences.enum.js';
 import { UserType } from '../../types/user-type.enum.js';
 
 export class TSVFileReader implements FileReader {
@@ -58,18 +57,18 @@ export class TSVFileReader implements FileReader {
         city: City[city as keyof typeof City],
         previewImage,
         propertyImages: propertyImages.split(';'),
-        isPremium: Boolean(isPremium),
-        isFavorite: Boolean(isFavorite),
+        isPremium: JSON.parse(isPremium),
+        isFavorite: JSON.parse(isFavorite),
         rating: Number.parseFloat(rating),
-        housingType: Housing[housingType as keyof typeof Housing],
-        roomsNumber: Number.parseInt(roomsNumber, 10),
-        guestsNumber: Number.parseInt(guestsNumber, 10),
-        price: Number.parseInt(price, 10),
-        conveniences: conveniences.split(';').filter(Boolean).map((conv) => Conveniences[conv as keyof typeof Conveniences]),
+        housingType: HousingType[housingType as keyof typeof HousingType],
+        roomsNumber: Number(roomsNumber),
+        guestsNumber: Number(guestsNumber),
+        price: Number(price),
+        conveniences: conveniences.split(';').filter(Boolean).map((conv) => Convenience[conv as keyof typeof Convenience]),
         user: {
           name,
           email,
-          avatar: avatar as AvatarExtention,
+          avatar,
           password,
           userType: UserType[userType as keyof typeof UserType]
         },

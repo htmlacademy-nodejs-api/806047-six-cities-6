@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import { TSVFileReader } from '../../shared/lib/file-reader/index.js';
 
 export class ImportCommand implements Command {
-  public getName(): string {
+  public getName() {
     return '--import';
   }
 
