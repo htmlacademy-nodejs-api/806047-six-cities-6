@@ -9,4 +9,4 @@
 .DS_Store
 coverage
 *.log
-mocks/mock-data.tsv
+/mocks/*.tsv
