@@ -1,0 +1,51 @@
+{
+  "api": {
+    "titles": [
+      "Наименование1",
+      "Наименование2",
+      "Наименование3"
+    ],
+
+    "cities": [
+      "Paris",
+      "Cologne",
+      "Brussels"
+    ],
+  
+    "descriptions": [
+      "Описание предложения.Мин. длина 20 символов1",
+      "Описание предложения.Мин. длина 20 символов2",
+      "Описание предложения.Мин. длина 20 символов3"
+    ],
+
+    "previews": [
+      "hotel_preview.jpg",
+      "beach_resort_preview.jpg",
+      "sunset_hotel_preview.jpg"
+    ],
+    
+    "images": [
+      "hotel-01.jpg",
+      "hotel-02.jpg",
+      "hotel-03.jpg"
+    ],
+
+    "names": [
+      "Dougie Smith",
+      "Laura Johnson",
+      "John Davis"
+    ],
+
+    "emails": [
+      "reception1@hotel.com",
+      "reception2@hotel.com",
+      "reception3@hotel.com"
+    ],
+
+    "avatars": [
+      "avatar1.jpg",
+      "avatar2.jpg",
+      "avatar3.jpg"
+    ]
+  }
+}
