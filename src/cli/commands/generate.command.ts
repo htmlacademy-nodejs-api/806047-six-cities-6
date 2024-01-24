@@ -3,6 +3,7 @@ import { Command } from './command.interface.js';
 import { MockServerData } from '../../shared/types/mock-server-data.type.js';
 import { TsvRentalOfferGenerator } from '../../shared/lib/rental-offer-generator/index.js';
 import { TSVFileWriter } from '../../shared/lib/file-writer/index.js';
+import chalk from 'chalk';
 
 export class GenerateCommand implements Command {
   private initialData: MockServerData;
@@ -36,7 +37,7 @@ export class GenerateCommand implements Command {
     try {
       await this.load(url);
       await this.write(filePath, offerCount);
-
+      console.info(chalk.bgCyan('Generated data success'));
     } catch {
       console.error('Can\'t generate data');
     }

@@ -7,9 +7,27 @@
     ],
 
     "cities": [
-      "Paris",
-      "Cologne",
-      "Brussels"
+      {
+        "name": "Paris",
+        "location": {
+          "latitude": 48.85661,
+          "longitude": 2.351499
+        }
+      },
+      {
+        "name": "Cologne",
+        "location": {
+          "latitude": 60.12131,
+          "longitude": 3.12312
+        }
+      },
+      {
+        "name":  "Brussels",
+        "location": {
+          "latitude": 78.121,
+          "longitude": 10.112
+        }
+      }
     ],
   
     "descriptions": [
