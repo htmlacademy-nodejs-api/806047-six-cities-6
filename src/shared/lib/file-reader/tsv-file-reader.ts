@@ -1,79 +1,38 @@
 import { FileReader } from './file-reader.interface.js';
-import { readFileSync } from 'node:fs';
-import { RentalOffer } from '../../types/rental-offer.type.js';
-import { City } from '../../types/city.enum.js';
-import { HousingType } from '../../types/housing-type.enum.js';
-import { Convenience } from '../../types/conveniences.enum.js';
-import { UserType } from '../../types/user-type.enum.js';
+import { createReadStream } from 'node:fs';
+import { EventEmitter } from 'node:events';
 
-export class TSVFileReader implements FileReader {
-  private rawData = '';
+const CHUNK_SIZE = 16384;
 
+export class TSVFileReader extends EventEmitter implements FileReader {
   constructor(
     private readonly filename: string
-  ) {}
-
-  public read(): void {
-    this.rawData = readFileSync(this.filename, { encoding: 'utf-8' });
+  ) {
+    super();
   }
 
-  public toArray(): RentalOffer[] {
-    if (!this.rawData) {
-      throw new Error('File was not read');
+  public async read(): Promise<void> {
+    const readStream = createReadStream(this.filename, {
+      highWaterMark: CHUNK_SIZE,
+      encoding: 'utf-8',
+    });
+
+    let remainingData = '';
+    let nextLinePosition = -1;
+    let importedRowCount = 0;
+
+    for await (const chunk of readStream) {
+      remainingData += chunk.toString();
+
+      while ((nextLinePosition = remainingData.indexOf('\n')) >= 0) {
+        const completeRow = remainingData.slice(0, nextLinePosition + 1);
+        remainingData = remainingData.slice(++nextLinePosition);
+        importedRowCount++;
+
+        this.emit('line', completeRow);
+      }
     }
 
-
-    return this.rawData
-      .split('\n')
-      .filter((row) => row.trim().length > 0)
-      .map((line) => line.split('\t'))
-      .map(([
-        title,
-        description,
-        postDate,
-        city,
-        previewImage,
-        propertyImages,
-        isPremium,
-        isFavorite,
-        rating,
-        housingType,
-        roomsNumber,
-        guestsNumber,
-        price,
-        conveniences,
-        name,
-        email,
-        avatar,
-        password,
-        userType,
-        commentsCount,
-        latitude,
-        longitude
-      ]) => ({
-        title,
-        description,
-        postDate: new Date(postDate),
-        city: City[city as keyof typeof City],
-        previewImage,
-        propertyImages: propertyImages.split(';'),
-        isPremium: JSON.parse(isPremium),
-        isFavorite: JSON.parse(isFavorite),
-        rating: Number.parseFloat(rating),
-        housingType: HousingType[housingType as keyof typeof HousingType],
-        roomsNumber: Number(roomsNumber),
-        guestsNumber: Number(guestsNumber),
-        price: Number(price),
-        conveniences: conveniences.split(';').filter(Boolean).map((conv) => Convenience[conv as keyof typeof Convenience]),
-        user: {
-          name,
-          email,
-          avatar,
-          password,
-          userType: UserType[userType as keyof typeof UserType]
-        },
-        commentsCount: Number.parseInt(commentsCount, 10),
-        coordinates: { latitude: Number.parseFloat(latitude), longitude: Number.parseFloat(longitude) },
-      }));
+    this.emit('end', importedRowCount);
   }
 }
