@@ -1,8 +1,8 @@
-import { City } from '../../types/city.enum.js';
-import { Convenience } from '../../types/conveniences.enum.js';
-import { HousingType } from '../../types/housing-type.enum.js';
-import { RentalOffer } from '../../types/rental-offer.type.js';
-import { UserType } from '../../types/user-type.enum.js';
+import { City } from '../types/city.enum.js';
+import { Convenience } from '../types/conveniences.enum.js';
+import { HousingType } from '../types/housing-type.enum.js';
+import { RentalOffer } from '../types/rental-offer.type.js';
+import { UserType } from '../types/user-type.enum.js';
 
 export function createRentalOffer(offer: string): RentalOffer {
   const [
