@@ -2,7 +2,7 @@ import chalk from 'chalk';
 
 import { Command } from './command.interface.js';
 import { TSVFileReader } from '../../shared/lib/file-reader/index.js';
-import { createRentalOffer, getErrorMessage } from '../../shared/lib/helpers/index.js';
+import { createRentalOffer, getErrorMessage } from '../../shared/helpers/index.js';
 
 export class ImportCommand implements Command {
   public getName() {
