@@ -2,12 +2,10 @@ import { Convenience } from './conveniences.enum.js';
 import { City } from './city.enum.js';
 import { Coordinates } from './coordinates.type.js';
 import { HousingType } from './housing-type.enum.js';
-import { User } from './user.type.js';
 
 export type RentalOffer = {
   title: string;
   description: string;
-  postDate: Date;
   city: City;
   previewImage: string;
   propertyImages: string[];
@@ -19,7 +17,6 @@ export type RentalOffer = {
   guestsNumber: number;
   price: number;
   conveniences: Convenience[];
-  user: User;
   commentsCount: number;
   coordinates: Coordinates;
 }

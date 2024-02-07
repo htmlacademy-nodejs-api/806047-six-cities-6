@@ -1,69 +1,69 @@
 {
-  "api": {
+"api": {
     "titles": [
-      "Наименование1",
-      "Наименование2",
-      "Наименование3"
+    "Наименование1",
+    "Наименование2",
+    "Наименование3"
     ],
 
     "cities": [
-      {
+    {
         "name": "Paris",
         "location": {
-          "latitude": 48.85661,
-          "longitude": 2.351499
+        "latitude": 48.85661,
+        "longitude": 2.351499
         }
-      },
-      {
+    },
+    {
         "name": "Cologne",
         "location": {
-          "latitude": 60.12131,
-          "longitude": 3.12312
+        "latitude": 60.12131,
+        "longitude": 3.12312
         }
-      },
-      {
+    },
+    {
         "name":  "Brussels",
         "location": {
-          "latitude": 78.121,
-          "longitude": 10.112
+        "latitude": 78.121,
+        "longitude": 10.112
         }
-      }
+    }
     ],
-  
+
     "descriptions": [
-      "Описание предложения.Мин. длина 20 символов1",
-      "Описание предложения.Мин. длина 20 символов2",
-      "Описание предложения.Мин. длина 20 символов3"
+    "Описание предложения.Мин. длина 20 символов1",
+    "Описание предложения.Мин. длина 20 символов2",
+    "Описание предложения.Мин. длина 20 символов3"
     ],
 
     "previews": [
-      "hotel_preview.jpg",
-      "beach_resort_preview.jpg",
-      "sunset_hotel_preview.jpg"
+    "hotel_preview.jpg",
+    "beach_resort_preview.jpg",
+    "sunset_hotel_preview.jpg"
     ],
     
     "images": [
-      "hotel-01.jpg",
-      "hotel-02.jpg",
-      "hotel-03.jpg"
+    "hotel-01.jpg",
+    "hotel-02.jpg",
+    "hotel-03.jpg"
     ],
 
     "names": [
-      "Dougie Smith",
-      "Laura Johnson",
-      "John Davis"
+    "Dougie Smith",
+    "Laura Johnson",
+    "John Davis"
     ],
 
     "emails": [
-      "reception1@hotel.com",
-      "reception2@hotel.com",
-      "reception3@hotel.com"
+    "reception1@hotel.com",
+    "reception2@hotel.com",
+    "reception3@hotel.com"
     ],
 
     "avatars": [
-      "avatar1.jpg",
-      "avatar2.jpg",
-      "avatar3.jpg"
+    "avatar1.jpg",
+    "avatar2.jpg",
+    "avatar3.jpg"
     ]
-  }
+}
 }

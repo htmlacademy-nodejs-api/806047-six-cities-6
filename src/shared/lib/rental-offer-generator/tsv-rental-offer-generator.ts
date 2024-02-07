@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { City, MockServerData } from '../../types/mock-server-data.type.js';
-import { generatePassword, generateRandomValue, getRandomBoolean, getRandomItem, getRandomItems } from '../../helpers/common.js';
+import { generateRandomValue, getRandomBoolean, getRandomItem, getRandomItems } from '../../helpers/common.js';
 import { RentalOfferGenerator } from './rental-offer-generator.interface.js';
 import { HousingType } from '../../types/housing-type.enum.js';
 import { Convenience } from '../../types/conveniences.enum.js';
@@ -47,7 +47,6 @@ export class TsvRentalOfferGenerator implements RentalOfferGenerator {
       userName,
       userEmail,
       userAvatar,
-      password: generatePassword(generateRandomValue(MIN_VALUE, MAX_VALUE)),
       userType,
     };
 
