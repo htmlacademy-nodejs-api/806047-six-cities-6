@@ -1,4 +1,4 @@
-import { Convenience, HousingType, City } from '../../../types/index.js';
+import { HousingType, City, Convenience } from '../../../types/index.js';
 
 export class CreateRentDto {
   public title: string;

@@ -25,6 +25,8 @@ export class MongoDatabaseClient implements DatabaseClient {
   }
 
   public async connect(uri: string): Promise<void> {
+    this.logger.info(`MondoDB connected uri ${uri}`);
+
     if(this.isConnectedToDatabase()) {
       throw Error('MongoDB client already connected.');
     }

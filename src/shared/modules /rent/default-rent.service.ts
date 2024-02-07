@@ -1,3 +1,4 @@
+import * as mongoose from 'mongoose';
 import { inject, injectable } from 'inversify';
 import { RentService } from './rent.service.interface.js';
 import { Component } from '../../types/components.emun.js';
@@ -16,11 +17,12 @@ export class DefaultRentService implements RentService {
 
   async create(dto: CreateRentDto): Promise<DocumentType<RentEntity>> {
     const result = await this.rentModel.create(dto);
+
     this.logger.info(`New rent created: ${dto.title}`);
     return result;
   }
 
-  async findById(rentId: string): Promise<DocumentType<RentEntity> | null> {
-    return this.rentModel.findById(rentId);
+  public async findByUserId(userId: string): Promise<RentEntity[] | null> {
+    return await this.rentModel.find({ userId: new mongoose.Types.ObjectId(userId) });
   }
 }

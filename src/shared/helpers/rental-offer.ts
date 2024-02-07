@@ -2,6 +2,7 @@ import { City } from '../types/city.enum.js';
 import { Convenience } from '../types/conveniences.enum.js';
 import { HousingType } from '../types/housing-type.enum.js';
 import { RentalOffer } from '../types/rental-offer.type.js';
+import { UserType } from '../types/user-type.enum.js';
 
 export function createRentalOffer(offer: string): RentalOffer {
   const [
@@ -18,6 +19,11 @@ export function createRentalOffer(offer: string): RentalOffer {
     guestsNumber,
     price,
     conveniences,
+    name,
+    email,
+    avatar,
+    password,
+    userType,
     commentsCount,
     latitude,
     longitude,
@@ -37,6 +43,13 @@ export function createRentalOffer(offer: string): RentalOffer {
     guestsNumber: Number(guestsNumber),
     price: Number(price),
     conveniences: conveniences.split(';').map((conv) => Convenience[conv as keyof typeof Convenience]),
+    user: {
+      name,
+      email,
+      avatar,
+      password,
+      userType: UserType[userType as keyof typeof UserType]
+    },
     commentsCount: Number.parseInt(commentsCount, 10),
     coordinates: { latitude: Number.parseFloat(latitude), longitude: Number.parseFloat(longitude) },
   };

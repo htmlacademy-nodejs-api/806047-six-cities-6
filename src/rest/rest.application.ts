@@ -35,16 +35,6 @@ export class RestApplication {
 
     await this.initDatabase();
 
-    // const user = await UserModel.create({
-    //   email: 'test@email.local',
-    //   avatar: 'keks.jpg',
-    //   name: 'Keks2',
-    //   userType: 'Pro',
-    // });
-
-
-    // console.log(user);
-
     this.logger.info('Init database completed');
   }
 }

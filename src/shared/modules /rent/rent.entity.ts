@@ -1,5 +1,5 @@
 import { Ref, defaultClasses, getModelForClass, modelOptions, prop } from '@typegoose/typegoose';
-import { City, HousingType, Convenience } from '../../types/index.js';
+import { City, Convenience, HousingType } from '../../types/index.js';
 import { UserEntity } from '../user/user.entity.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
@@ -7,7 +7,7 @@ export interface RentEntity extends defaultClasses.Base {}
 
 @modelOptions({
   schemaOptions: {
-    collection: 'users',
+    collection: 'rents',
     timestamps: true,
   }
 })
@@ -29,7 +29,7 @@ export class RentEntity extends defaultClasses.TimeStamps {
   @prop({ required: true })
   public previewImage: string;
 
-  @prop({ required: true })
+  @prop({ required: true, type: () => String })
   public propertyImages: string[];
 
   @prop({ required: true })
@@ -41,7 +41,11 @@ export class RentEntity extends defaultClasses.TimeStamps {
   @prop({ required: true, min: 1, max: 5 })
   public rating: number;
 
-  @prop({ required: true })
+  @prop({
+    required: true,
+    enum: HousingType,
+    type: () => String,
+  })
   public housingType: HousingType;
 
   @prop({ required: true, min: 1, max: 8 })
@@ -53,7 +57,11 @@ export class RentEntity extends defaultClasses.TimeStamps {
   @prop({ required: true, min: 100, max: 100000 })
   public price: number;
 
-  @prop({ required: true })
+  @prop({
+    required: true,
+    enum: Convenience,
+    type: () => String
+  })
   public conveniences: Convenience[];
 
 
@@ -63,7 +71,7 @@ export class RentEntity extends defaultClasses.TimeStamps {
     longitude: number;
   };
 
-  @prop({default: 0, required: false})
+  @prop({ default: 0, required: false})
   public commentsCount: number;
 
   @prop({ref: 'UserEntity', required: true })

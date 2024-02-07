@@ -4,5 +4,5 @@ import { CreateRentDto } from './index.js';
 
 export interface RentService {
   create(dto: CreateRentDto): Promise<DocumentType<RentEntity>>
-  findById(rentId: string): Promise<DocumentType<RentEntity> | null>
+  findByUserId(rentId: string): Promise<RentEntity[] | null>
 }
