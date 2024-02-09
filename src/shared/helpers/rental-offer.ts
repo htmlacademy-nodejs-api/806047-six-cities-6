@@ -8,7 +8,6 @@ export function createRentalOffer(offer: string): RentalOffer {
   const [
     title,
     description,
-    postDate,
     city,
     previewImage,
     propertyImages,
@@ -33,7 +32,6 @@ export function createRentalOffer(offer: string): RentalOffer {
   return {
     title,
     description,
-    postDate: new Date(postDate),
     city: City[city as keyof typeof City],
     previewImage,
     propertyImages: propertyImages.split(';'),
