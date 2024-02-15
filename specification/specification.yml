@@ -1,0 +1,775 @@
+openapi: 3.0.3
+info:
+  title: API сервер для проекта «Шесть городов».
+  description: |-
+    * Список ресурсов и маршрутов сервера «Шесть городов».
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 2.0.0
+
+tags:
+  - name: users
+    description: Действия с пользователем.
+  - name: rents
+    description: Действия с предложениями об аренде.
+  - name: comments
+    description: Действия с комментариями.
+
+paths:
+  /users/register:
+    post:
+      tags:
+        - users
+      summary: Регистрация пользователя
+      description: Регистрирует нового пользователя
+
+      requestBody:
+        description: Информация для создания нового пользователя
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createUser"
+        required: true
+
+      responses:
+        "201":
+          description: Пользователь зарегистрирован. Объект пользователя
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user"
+
+        "400":
+          description: Ошибка валидации данных
+
+        "409":
+          description: Пользователь с таким email уже существует
+
+        "500":
+          description: Внутренняя ошибка сервера.
+
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Авторизация пользователя
+      description: Авторизует пользователя на основе логина и пароля
+
+      requestBody:
+        description: Информация авторизации пользователя
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/loginUser"
+        required: true
+
+      responses:
+        "200":
+          description: Пользователь авторизован. Объект пользователя
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user"
+        "400":
+          description: Ошибка валидации данных
+
+        "401":
+          description: Неверные данные для авторизации
+      
+        "500":
+          description: Внутренняя ошибка сервера.
+
+    get:
+      tags:
+        - users
+      summary: Проверка состояния пользователя
+      description: Возвращает информацию по авторизованному пользователю
+
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+            example: eufneh34fh93hf9hdjfdu3hf93hedf.3f9374gf7w.fu394gf87er
+
+      responses:
+        "200":
+          description: Пользователь авторизован. Токен валидный
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user"
+
+        "401":
+          description: Пользователь не авторизован. Токен не валидный
+
+        "500":
+          description: Внутренняя ошибка сервера.
+
+  /users/logout:
+    post:
+      tags:
+        - users
+      summary: Завершение сессии пользователя
+
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+            example: eufneh34fh93hf9hdjfdu3hf93hedf.3f9374gf7w.fu394gf87er
+
+      responses:
+        "204":
+          description: Сессия завершена
+
+        "401":
+          description: Данный пользователь не авторизован
+
+        "500":
+          description: Внутренняя ошибка сервера.
+
+  /rents:
+    post:
+      tags:
+        - offers
+      summary: Создание нового предложения об аренде
+
+      requestBody:
+        description: Информация для создания нового предложения
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createRent"
+        required: true
+
+      responses:
+        "201":
+          description: Новое предложение успешно создано. Объект предложения
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rent"
+
+        "400":
+          description: Ошибка валидации данных
+
+        "401":
+          description: Создавать предложения по аренде могут только авторизованные пользователи.
+
+        "500":
+          description: Внутренняя ошибка сервера.
+
+    get:
+      tags:
+        - rents
+      summary: Получение списка предложений об аренде
+
+      parameters:
+        - name: amount
+          in: query
+          description: Количество предложений в списке. По умолчанию 60.
+          schema:
+            type: number
+            default: 60
+            example: 100
+
+      responses:
+        "200":
+          description: Список предложения получен.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/rentPreview"
+
+        "400":
+          description: Неверные параметры запроса.
+
+        "500":
+          description: Внутренняя ошибка сервера.
+
+  /rents/{rentId}:
+    get:
+      tags:
+        - offers
+      summary: Получение детальной информации о предложении
+
+      parameters:
+        - name: rentId
+          in: path
+          description: Идентификатор предложения
+          required: true
+          schema:
+            type: string
+            example: 132
+
+      responses:
+        "200":
+          description: Детальная информация о предложении
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rent"
+
+        "400":
+          description: Неверный запрос или данные.
+
+        "404":
+          description: Предложение не найдено.
+
+        "500":
+          description: Внутренняя ошибка сервера.
+
+
+    patch:
+      tags:
+        - offers
+      summary: Редактирование предложения.
+
+      parameters:
+        - name: rentId
+          in: path
+          description: Идентификатор предложения
+          required: true
+          schema:
+            type: string
+            example: 132
+
+      requestBody:
+        description: Информация для редактирования предложения
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createRent"
+        required: true
+
+      responses:
+        "200":
+          description: Предложение успешно отредактировано. Объект предложения.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rent"
+
+        "400":
+          description: Неверный запрос или данные.
+
+        "401":
+          description: Требуется аутентификация.
+
+        "403":
+          description: Вы не можете отредактировать чужое предложение по аренде.
+
+        "404":
+          description: Предложение не найдено.
+
+        "500":
+          description: Внутренняя ошибка сервера.
+
+    delete:
+      tags:
+        - offers
+      summary: Удаление предложения.
+
+      parameters:
+        - name: rentId
+          in: path
+          description: Идентификатор предложения
+          required: true
+          schema:
+            type: string
+            example: 132
+
+      responses:
+        "204":
+          description: Предложение успешно удалено.
+
+        "401":
+          description: Пользователь не авторизован.
+
+        "403":
+          description: У пользователя нет доступа к удалению предложения.
+
+        "404":
+          description: Предложение не найдено.
+
+        "500":
+          description: Внутренняя ошибка сервера.
+
+  /rents/premium:
+    get:
+      tags:
+        - offers
+      summary: Получение списка премиальных предложений для города
+
+      parameters:
+        - name: city
+          in: query
+          description: Название города
+          required: true
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/rent/properties/city"
+
+      responses:
+        "200":
+          description: Список премиальных предложений
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/rentPreview"
+
+        "400":
+          description: Неверный запрос или данные.
+
+        "404":
+            description: Предложение не найдено.
+
+        "500":
+            description: Внутренняя ошибка сервера.
+
+  /rents/favorites:
+    get:
+      tags:
+        - offers
+      summary: Получения списка предложений, добавленных в избранное
+
+      responses:
+        "200":
+          description: Список избранных предложений
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/rentPreview"
+
+        "401":
+          description: Пользователь не авторизован
+
+        "500":
+          description: Внутренняя ошибка сервера.
+
+  /rents/{rentsId}/favorite:
+    post:
+      tags:
+        - offers
+      summary: Добавление предложения в избранное.
+
+      parameters:
+        - name: rentId
+          in: path
+          description: Идентификатор предложения.
+          required: true
+          schema:
+            type: string
+            example: 132
+
+      responses:
+        "200":
+          description: Предложение добавлено в избранное.
+
+        "401":
+          description: Пользователь не авторизован.
+
+        "404":
+          description: Предложение не найдено.
+        
+        "500":
+          description: Внутренняя ошибка сервера.
+
+    delete:
+      tags:
+        - offers
+      summary: Удаление предложения из избранного
+
+      parameters:
+        - name: rentId
+          in: path
+          description: Идентификатор предложения
+          required: true
+          schema:
+            type: string
+            example: 132
+
+      responses:
+        "204":
+          description: Предложение удалено из избранных.
+
+        "400":
+          description: Неверный запрос или данные.
+
+        "401":
+          description: Требуется аутентификация.
+
+        "404":
+          description: Предложение не найдено.
+
+        "500":
+          description: Внутренняя ошибка сервера.
+
+  /rents/{rentId}/comments:
+    get:
+      tags:
+        - comments
+      summary: Получение списка комментариев для предложения
+
+      parameters:
+        - name: rentId
+          in: path
+          description: Идентификатор предложения
+          required: true
+          schema:
+            type: string
+            example: 132
+
+      responses:
+        "200":
+          description: Список комментариев
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/comment"
+
+        "404":
+          description: Комментарий не найден.
+
+        "500":
+          description: Внутренняя ошибка сервера.
+
+    post:
+      tags:
+        - comments
+      summary: Добавление комментария для предложения
+
+      parameters:
+        - name: rentId
+          in: path
+          description: Идентификатор предложения
+          required: true
+          schema:
+            type: string
+            example: 132
+
+      requestBody:
+        description: Информация для создания комментария
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/commentCreate"
+        required: true
+
+      responses:
+        "200":
+          description: Комментарий создан. Объект комментария
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/comment"
+
+        "400":
+          description: Ошибка валидации данных.
+
+        "404":
+          description: Ошибка при создании комментария.
+
+        "401":
+          description: Пользователь не авторизован.
+
+components:
+  schemas:
+    user:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+          readOnly: true
+
+        name:
+          type: string
+          example: John
+
+        email:
+          type: string
+          example: john@john.com
+
+        avatar:
+          type: string
+          example: johnny.jpg
+
+        userType:
+          type: string
+          enum:
+            - обычный
+            - pro
+          example: Pro
+
+    createUser:
+      type: object
+
+      properties:
+        name:
+          type: string
+
+        email:
+          type: string
+
+        avatar:
+          type: string
+          nullable: true
+
+        password:
+          type: string
+
+        typeUser:
+          $ref: '#/components/schemas/userType'
+
+    loginUser:
+      type: object
+      properties:
+        email:
+          type: string
+          example: john@john.com
+
+        password:
+          type: string
+          example: 12345654321
+
+      required:
+        - email
+        - password
+
+    userType:
+      type: string
+      enum:
+        - common
+        - pro
+      
+    rent:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          readOnly: true
+
+        title:
+          type: string
+          example: Test Hotel
+
+        description:
+            type: string
+            example: Test Hotel in Dusseldorf is a cozy hotel with stunning views of the city.
+
+        createdDate:
+          type: string
+          example: 2024-02-12T12:12:12.121Z
+
+        city:
+          type: string
+          enum:
+              - Paris
+              - Cologne
+              - Brussels
+              - Amsterdam
+              - Hamburg
+              - Dusseldorf
+          example: Dusseldorf
+
+        previewImage:
+          type: string
+          example: images/hotel1.jpg
+
+        propertyImages:
+          type: array
+          items:
+            type: string
+          example:
+            ["http://images.com/hotel/1/1.jpg", "http://images.com/hotel/1/2.jpg", "http://images.com/hotel/1/3.jpg"]
+
+        isPremium:
+          type: boolean
+          example: false
+
+        isFavorite:
+          type: boolean
+          example: true
+
+        rating:
+          type: number
+          example: 4.2
+
+        housingType:
+          type: string
+          enum:
+            - apartment
+            - house
+            - room
+            - hotel
+          example: hotel
+
+        roomsNumber:
+          type: number
+          example: 3
+
+        guestsNumber:
+          type: number
+          example: 5
+
+        price:
+          type: number
+          example: 1000
+
+        conveniences:
+          type: array
+          items:
+            type: string
+            enum:
+              - Breakfast
+              - Air conditioning
+              - Laptop friendly workspace
+              - Baby seat
+              - Washer
+              - Towels
+              - Fridge
+          example: ["Breakfast", "Air conditioning"]
+
+        author:
+          $ref: "#/components/schemas/user"
+
+        commentsCount:
+          type: number
+          example: 13
+
+        coordinates:
+          $ref: "#/components/schemas/coordinates"
+
+    createRent:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/rent"
+
+      required:
+        - title
+        - description
+        - createdDate
+        - city
+        - previewImage
+        - propertyImages
+        - isPremium
+        - isFavorite
+        - rating
+        - housingType
+        - roomsNumber
+        - guestsNumber
+        - price
+        - conveniences
+        - author
+        - coordinates
+
+    rentPreview:
+      type: object
+      properties:
+        id:
+          allOf:
+            - $ref: "#/components/schemas/rent/properties/id"
+
+        price:
+          allOf:
+            - $ref: "#/components/schemas/rent/properties/price"
+
+        title:
+          allOf:
+            - $ref: "#/components/schemas/rent/properties/title"
+
+        housingType:
+          allOf:
+            - $ref: "#/components/schemas/rent/properties/housingType"
+
+        isFavorite:
+          allOf:
+            - $ref: "#/components/schemas/rent/properties/isFavorite"
+
+        createdDate:
+          allOf:
+            - $ref: "#/components/schemas/rent/properties/createdDate"
+
+        city:
+          allOf:
+            - $ref: "#/components/schemas/rent/properties/city"
+
+        previewImage:
+          allOf:
+            - $ref: "#/components/schemas/rent/properties/previewImage"
+
+        isPremium:
+          allOf:
+            - $ref: "#/components/schemas/rent/properties/isPremium"
+
+        rating:
+          allOf:
+            - $ref: "#/components/schemas/rent/properties/rating"
+
+        commentsCount:
+          allOf:
+            - $ref: "#/components/schemas/rent/properties/commentsCount"
+
+    coordinates:
+      type: object
+      properties:
+        latitude:
+          type: number
+          example: 51.225402
+
+        longitude:
+          type: number
+          example: 6.776314
+
+    comment:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+          readOnly: true
+
+        text:
+          type: string
+          example: Nice hotel with a view of the city.
+
+        createdDate:
+          type: string
+          example: 2024-01-12T12:26:04.232Z
+          readOnly: true
+
+        rating:
+          type: number
+          minimum: 1
+          maximum: 5
+          example: 3.5
+
+        author:
+          $ref: "#/components/schemas/user"
+
+    commentCreate:
+      type: object
+      properties:
+        text:
+          type: string
+          example: Nice hotel with a view of the city.
+
+        rating:
+          type: number
+          minimum: 1
+          maximum: 5
+          example: 3.5
