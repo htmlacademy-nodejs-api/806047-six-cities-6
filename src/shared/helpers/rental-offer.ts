@@ -13,7 +13,7 @@ export function createRentalOffer(offer: string): RentalOffer {
     propertyImages,
     isPremium,
     isFavorite,
-    rating,
+    rating = 0,
     housingType,
     roomsNumber,
     guestsNumber,
@@ -24,10 +24,11 @@ export function createRentalOffer(offer: string): RentalOffer {
     avatar,
     password,
     userType,
-    commentsCount,
     latitude,
     longitude,
   ] = offer.replace('\n', '').split('\t');
+
+  console.log(rating);
 
   return {
     title,
@@ -37,7 +38,7 @@ export function createRentalOffer(offer: string): RentalOffer {
     propertyImages: propertyImages.split(';'),
     isPremium: JSON.parse(isPremium),
     isFavorite: JSON.parse(isFavorite),
-    rating: Number.parseFloat(rating),
+    rating: 1,
     housingType: HousingType[housingType as keyof typeof HousingType],
     roomsNumber: Number(roomsNumber),
     guestsNumber: Number(guestsNumber),
@@ -50,7 +51,8 @@ export function createRentalOffer(offer: string): RentalOffer {
       password,
       userType: UserType[userType as keyof typeof UserType]
     },
-    commentsCount: Number.parseInt(commentsCount, 10),
-    coordinates: { latitude: Number.parseFloat(latitude), longitude: Number.parseFloat(longitude) },
+    commentsCount: 0,
+    latitude: Number.parseFloat(latitude),
+    longitude: Number.parseFloat(longitude)
   };
 }

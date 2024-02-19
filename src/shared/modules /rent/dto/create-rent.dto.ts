@@ -15,10 +15,6 @@ export class CreateRentDto {
   public price: number;
   public conveniences: Convenience[];
   public userId: string;
-  public coordinates: {
-    latitude: number;
-    longitude: number;
-  };
-
-  public commentsCount: number;
+  public latitude: number;
+  public longitude: number;
 }
