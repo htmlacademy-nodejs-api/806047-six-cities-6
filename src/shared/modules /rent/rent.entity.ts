@@ -64,12 +64,17 @@ export class RentEntity extends defaultClasses.TimeStamps {
   })
   public conveniences: Convenience[];
 
+  @prop({
+    type: Number,
+    required: true,
+  })
+  public latitude: number;
 
-  @prop({ required: true })
-  public coordinates: {
-    latitude: number;
-    longitude: number;
-  };
+  @prop({
+    type: Number,
+    required: true,
+  })
+  public longitude: number;
 
   @prop({ default: 0, required: false})
   public commentsCount: number;

@@ -10,7 +10,7 @@
   "main": "main.js",
   "scripts": {
     "dev:cli": "nodemon src/main.cli.ts",
-    "dev:rest": "nodemon src/main.rest.ts | pino-pretty --colorize --translateTime SYS:standard",
+    "dev:rest": "nodemon",
     "start:cli": "npm run build && node ./dist/main.cli.js",
     "start:rest": "npm run build && node ./dist/main.js",
     "build": "npm run clean && npm run compile",

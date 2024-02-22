@@ -7,3 +7,4 @@ export * from './housing-type.enum.js';
 export * from './rental-offer.type.js';
 export * from './user-type.enum.js';
 export * from './user.type.js';
+export * from './sort.enum.js';
