@@ -25,7 +25,7 @@ export class DefaultUserService implements UserService {
   }
 
   public async findByEmail(email: string): Promise<DocumentType<UserEntity> | null> {
-    return this.userModel.findOne({email});
+    return await this.userModel.findOne({ email });
   }
 
   public async findById(id: string): Promise<DocumentType<UserEntity> | null> {
@@ -40,5 +40,9 @@ export class DefaultUserService implements UserService {
     }
 
     return this.create(dto, salt);
+  }
+
+  public async exists(id: string): Promise<boolean> {
+    return (!!await this.userModel.exists({ _id: id }));
   }
 }
