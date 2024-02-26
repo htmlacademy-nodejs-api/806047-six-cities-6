@@ -8,6 +8,7 @@ import { DocumentType, types } from '@typegoose/typegoose';
 import { UpdateRentDto } from './dto/update-rent.dto.js';
 import { DEFAULT_RENTS_COUNT } from './rent.const.js';
 import { SortType } from '../../types/index.js';
+import { City } from '../../types/city.enum.js';
 
 @injectable()
 export class DefaultRentService implements RentService {
@@ -63,7 +64,7 @@ export class DefaultRentService implements RentService {
   }
 
   async updateById(rentId: string, dto: UpdateRentDto): Promise<DocumentType<RentEntity> | null> {
-    return this.rentModel
+    return await this.rentModel
       .findByIdAndUpdate(rentId, dto, { new: true })
       .populate(['userId'])
       .exec();
@@ -85,6 +86,24 @@ export class DefaultRentService implements RentService {
         createdAt: SortType.DESC
       })
       .populate(['userId'])
+      .exec();
+  }
+
+  async findById(rentId: string): Promise<DocumentType<RentEntity> | null> {
+    return this.rentModel.findById(rentId);
+  }
+
+  async exists(rentId: string): Promise<boolean> {
+    return !!await this.rentModel.exists({_id: rentId});
+  }
+
+  public async findPremiumRentsByCity(city: City): Promise<DocumentType<RentEntity>[]> {
+    return await this.rentModel
+      .aggregate([
+        { $match: { city, isPremium: true } },
+        { $sort: { createdAt: SortType.DESC } },
+        { $limit: DEFAULT_RENTS_COUNT },
+      ])
       .exec();
   }
 }
