@@ -38,9 +38,6 @@ export class RentEntity extends defaultClasses.TimeStamps {
   @prop({ required: true })
   public isFavorite: boolean;
 
-  @prop({ required: true, min: 1, max: 5 })
-  public rating: number;
-
   @prop({
     required: true,
     enum: HousingType,
@@ -75,9 +72,6 @@ export class RentEntity extends defaultClasses.TimeStamps {
     required: true,
   })
   public longitude: number;
-
-  @prop({ default: 0, required: false})
-  public commentsCount: number;
 
   @prop({ref: 'UserEntity', required: true })
   public userId: Ref<UserEntity>;

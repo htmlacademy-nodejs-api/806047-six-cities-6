@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { BaseController, HttpError, HttpMethod } from '../../lib/rest/index.js';
+import { BaseController, HttpError, HttpMethod, ValidateDtoMiddleware, ValidateObjectIdMiddleware } from '../../lib/rest/index.js';
 import { Logger } from '../../lib/logger/index.js';
 import { Component } from '../../types/index.js';
 import { Response } from 'express';
@@ -9,6 +9,7 @@ import { CommentService } from './comment.service.interface.js';
 import { StatusCodes } from 'http-status-codes';
 import { fillDTO } from '../../helpers/common.js';
 import { CommentRdo } from './rdo/comment.rdo.js';
+import { CreateCommentDto } from './dto/create-comment.dto.js';
 
 @injectable()
 export class CommentController extends BaseController {
@@ -22,8 +23,23 @@ export class CommentController extends BaseController {
 
     this.isExistingRent = this.isExistingRent.bind(this);
 
-    this.addRoute({ path: '/:rentId', method: HttpMethod.Get, handler: this.index });
-    this.addRoute({ path: '/:rentId', method: HttpMethod.Post, handler: this.create });
+    this.addRoute({
+      path: '/:rentId',
+      method: HttpMethod.Get,
+      handler: this.index,
+      middlewares: [
+        new ValidateObjectIdMiddleware('rentId')
+      ]
+    });
+    this.addRoute({
+      path: '/:rentId',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [
+        new ValidateObjectIdMiddleware('rentId'),
+        new ValidateDtoMiddleware(CreateCommentDto),
+      ]
+    });
   }
 
   public async index(

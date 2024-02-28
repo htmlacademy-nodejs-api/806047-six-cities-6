@@ -8,7 +8,7 @@ Content-Type: application/json
   "text": "text_test",
   "rentId": "65d1f37387e79697ef934acb",
   "userId": "65d1f37387e79697ef934ac1",
-  "raiting": 4
+  "raiting": 4000
 }
 
 ###

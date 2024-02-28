@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { inject, injectable } from 'inversify';
-import { BaseController, HttpError, HttpMethod } from '../../lib/rest/index.js';
+import { BaseController, HttpError, HttpMethod, ValidateDtoMiddleware, ValidateObjectIdMiddleware } from '../../lib/rest/index.js';
 import { Logger } from '../../lib/logger/index.js';
 import { City, Component } from '../../types/index.js';
 import { RentService } from './rent.service.interface.js';
@@ -12,14 +12,12 @@ import {
   UpdateRentRequestType,
   FindPremiumRentsByCityRequestType,
 } from './types/index.js';
-import { fillDTO } from '../../helpers/common.js';
+import { capitalize, fillDTO } from '../../helpers/common.js';
 import { RentRdo } from './rdo/rent.rdo.js';
 import { UserService } from '../user/index.js';
 import { StatusCodes } from 'http-status-codes';
-
-function isCity(city: string): boolean {
-  return Object.values(City).includes(city as City);
-}
+import { ValidateCitydMiddleware } from './middleware/validate-city.middleware.js';
+import { CreateRentDto } from './index.js';
 
 
 @injectable()
@@ -34,11 +32,46 @@ export class RentController extends BaseController {
 
 
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
-    this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
-    this.addRoute({ path: '/:rentId', method: HttpMethod.Get, handler: this.findById });
-    this.addRoute({ path: '/:rentId', method: HttpMethod.Patch, handler: this.update });
-    this.addRoute({ path: '/:rentId', method: HttpMethod.Delete, handler: this.delete });
-    this.addRoute({ path: '/premium/:city', method: HttpMethod.Get, handler: this.findPremiumRentsByCity });
+    this.addRoute({
+      path: '/',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [
+        new ValidateDtoMiddleware(CreateRentDto)
+      ]
+    });
+
+    this.addRoute({ path: '/:rentId',
+      method: HttpMethod.Get,
+      handler: this.findById,
+      middlewares: [
+        new ValidateObjectIdMiddleware('rentId')
+      ]
+    });
+    this.addRoute({
+      path: '/:rentId',
+      method: HttpMethod.Patch,
+      handler: this.update,
+      middlewares: [
+        new ValidateObjectIdMiddleware('rentId')
+      ]
+    });
+    this.addRoute({
+      path: '/:rentId',
+      method: HttpMethod.Delete,
+      handler: this.delete,
+      middlewares: [
+        new ValidateObjectIdMiddleware('rentId')
+      ]
+    });
+    this.addRoute({
+      path: '/premium/:city',
+      method: HttpMethod.Get,
+      handler: this.findPremiumRentsByCity,
+      middlewares: [
+        new ValidateCitydMiddleware('city')
+      ]
+    });
   }
 
   public async index(
@@ -112,15 +145,7 @@ export class RentController extends BaseController {
     { params: { city } }: FindPremiumRentsByCityRequestType,
     res: Response
   ) {
-    if(!city || !isCity(city)) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Rent with city ${city} does not exist`,
-        'RentController',
-      );
-    }
-
-    const rents = await this.rentService.findPremiumRentsByCity(city as City);
+    const rents = await this.rentService.findPremiumRentsByCity(capitalize(city) as City);
 
     this.ok(res, rents.map((rent) => fillDTO(RentRdo, rent)));
   }
