@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 import { ClassConstructor, plainToInstance } from 'class-transformer';
+import { City } from '../types/city.enum.js';
 
 export function generateRandomValue(min:number, max: number, numAfterDigit = 0) {
   return +((Math.random() * (max - min)) + min).toFixed(numAfterDigit);
@@ -43,4 +44,12 @@ export function createErrorObject(message: string) {
 
 export function fillDTO<T, V>(someDto: ClassConstructor<T>, plainObject: V) {
   return plainToInstance(someDto, plainObject, { excludeExtraneousValues: true });
+}
+
+export function isCity(city: string): boolean {
+  return Object.values(City).includes(city as City);
+}
+
+export function capitalize(value: string) {
+  return `${value[0].toUpperCase()}${value.slice(1)}`;
 }

@@ -8,7 +8,6 @@ export class UpdateRentDto {
   public propertyImages?: string[];
   public isFavorite?: boolean;
   public isPremium?: boolean;
-  public rating?: number;
   public housingType?: HousingType;
   public roomsNumber?: number;
   public guestsNumber?: number;
