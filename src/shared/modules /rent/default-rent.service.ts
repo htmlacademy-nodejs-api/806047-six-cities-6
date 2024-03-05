@@ -9,12 +9,15 @@ import { UpdateRentDto } from './dto/update-rent.dto.js';
 import { DEFAULT_RENTS_COUNT } from './rent.const.js';
 import { SortType } from '../../types/index.js';
 import { City } from '../../types/city.enum.js';
+import { UserService } from '../user/user-service.interface.js';
+
 
 @injectable()
 export class DefaultRentService implements RentService {
   constructor(
     @inject(Component.Logger) private readonly logger: Logger,
-    @inject(Component.RentModel) private readonly rentModel: types.ModelType<RentEntity>
+    @inject(Component.RentModel) private readonly rentModel: types.ModelType<RentEntity>,
+    @inject(Component.UserService) private readonly userSerive: UserService,
   ) {}
 
 
@@ -29,6 +32,15 @@ export class DefaultRentService implements RentService {
     return await this.rentModel
       .find()
       .limit(count)
+      .exec();
+  }
+
+  async updateCommentsCountAndRaiting(rendId: string, rating: number) {
+    return await this.rentModel
+      .findByIdAndUpdate(rendId, { rating })
+      .findOneAndUpdate({ _id: rendId }, {
+        $inc: { commentsCount: 1 },
+      })
       .exec();
   }
 
@@ -76,17 +88,21 @@ export class DefaultRentService implements RentService {
       .exec();
   }
 
-  async findFavoriteRent($limit = DEFAULT_RENTS_COUNT): Promise<DocumentType<RentEntity>[]> {
-    return await this.rentModel
-      .find({
-        isFavorite: true
-      })
-      .limit($limit)
-      .sort({
-        createdAt: SortType.DESC
-      })
-      .populate(['userId'])
-      .exec();
+  public async findFavorite(userId: string): Promise<DocumentType<RentEntity>[]> {
+    const user = await this.userSerive.findById(userId);
+    const rents = await this.find();
+
+    if(user?.favorites.length) {
+      return rents
+        .filter((rent) => user.favorites.includes(rent.id))
+        .map((rent) => {
+          rent.isFavorite = true;
+
+          return rent;
+        });
+    }
+
+    return [];
   }
 
   async findById(rentId: string): Promise<DocumentType<RentEntity> | null> {

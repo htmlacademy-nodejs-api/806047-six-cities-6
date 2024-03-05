@@ -5,7 +5,7 @@ import { Logger } from '../shared/lib/logger/index.js';
 import { RestSchema, Config } from '../shared/lib/config/index.js';
 import { DatabaseClient } from '../shared/lib/database-client/index.js';
 import { getMongoURI } from '../shared/helpers/index.js';
-import { ExceptionFilter } from '../shared/lib/rest/index.js';
+import { ExceptionFilter, ParseTokenMiddleware } from '../shared/lib/rest/index.js';
 import { UserController } from '../shared/modules /user/index.js';
 import { RentController } from '../shared/modules /rent/index.js';
 import { CommentController } from '../shared/modules /comment/index.js';
@@ -21,7 +21,8 @@ export class RestApplication {
     @inject(Component.ExceptionFilter) private readonly appExceptionFilter: ExceptionFilter,
     @inject(Component.UserController) private readonly userController: UserController,
     @inject(Component.RentController) private readonly rentController: RentController,
-    @inject(Component.CommentController) private readonly commentController: CommentController
+    @inject(Component.CommentController) private readonly commentController: CommentController,
+    @inject(Component.AuthExceptionFilter) private readonly authExceptionFilter: ExceptionFilter,
   ) {
     this.server = express();
   }
@@ -44,15 +45,20 @@ export class RestApplication {
   }
 
   private async initMiddleware() {
+    const authenticateMiddleware = new ParseTokenMiddleware(this.config.get('JWT_SECRET'));
     this.server.use(express.json());
+
 
     this.server.use(
       '/upload',
       express.static(this.config.get('UPLOAD_DIRECTORY'))
     );
+
+    this.server.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
   }
 
   private async initExceptionFilters() {
+    this.server.use(this.authExceptionFilter.catch.bind(this.authExceptionFilter));
     this.server.use(this.appExceptionFilter.catch.bind(this.appExceptionFilter));
   }
 

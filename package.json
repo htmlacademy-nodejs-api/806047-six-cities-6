@@ -48,6 +48,7 @@
     "multer": "1.4.5-lts.1",
     "mime-types": "2.1.35",
     "@typegoose/typegoose": "11.5.0",
+    "jose": "4.15.4",
     "chalk": "5.3.0",
     "convict": "6.2.4",
     "convict-format-with-validator": "6.2.0",

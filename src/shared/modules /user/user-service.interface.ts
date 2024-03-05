@@ -8,4 +8,6 @@ export interface UserService {
   findById(id: string): Promise<DocumentType<UserEntity> | null>;
   findOrCreate(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>>;
   exists(id: string): Promise<boolean>;
+  addRentToFavorites(userId: string, offerId: string): Promise<unknown>;
+  deleteRentFromFavorites(userId: string, offerId: string): Promise<unknown>;
 }

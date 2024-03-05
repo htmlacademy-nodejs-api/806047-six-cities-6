@@ -11,7 +11,8 @@ export interface RentService {
   findById(rentId: string): Promise<DocumentType<RentEntity> | null>;
   findDescByCreateDTTM(count?: number): Promise<DocumentType<RentEntity>[]>;
   deleteRentById(rentId: string): Promise<DocumentType<RentEntity> | null>;
-  findFavoriteRent(count?: number): Promise<DocumentType<RentEntity>[]>;
+  findFavorite(userId: string): Promise<DocumentType<RentEntity>[]>;
   findPremiumRentsByCity(city: City): Promise<DocumentType<RentEntity>[]>
   exists(rentId: string): Promise<boolean>;
+  updateCommentsCountAndRaiting(rendId: string, rating: number): Promise<DocumentType<RentEntity> | null>
 }

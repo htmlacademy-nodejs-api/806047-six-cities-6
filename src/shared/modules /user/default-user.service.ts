@@ -45,4 +45,16 @@ export class DefaultUserService implements UserService {
   public async exists(id: string): Promise<boolean> {
     return (!!await this.userModel.exists({ _id: id }));
   }
+
+  async addRentToFavorites(userId: string, rentId: string) {
+    return this.userModel
+      .findByIdAndUpdate(userId, { $push: { favorites: rentId } })
+      .exec();
+  }
+
+  public async deleteRentFromFavorites(userId: string, offerId: string): Promise<unknown> {
+    return this.userModel
+      .findByIdAndUpdate(userId, { $pull: { favorites: offerId } })
+      .exec();
+  }
 }
