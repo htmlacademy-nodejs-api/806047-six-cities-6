@@ -1,18 +1,16 @@
-# Комментарии
+# Получить
+GET http://localhost:8080/comments/65e1c842dfc7d6795cf27f7d HTTP/1.1
+Content-Type: application/json
+###
 
-## Создать комметрий
-POST http://localhost:8080/comments/65d1f37387e79697ef934acb HTTP/1.1
+# Создать комметрий
+POST http://localhost:8080/comments/65e1c842dfc7d6795cf27f7d HTTP/1.1
 Content-Type: application/json
 
 {
   "text": "text_test",
-  "rentId": "65d1f37387e79697ef934acb",
+  "rentId": "65e1c842dfc7d6795cf27f7d",
   "userId": "65d1f37387e79697ef934ac1",
-  "raiting": 4000
+  "raiting": 4
 }
-
 ###
-
-## Получить
-GET http://localhost:8080/comments/65d1f37387e79697ef934acb HTTP/1.1
-Content-Type: application/json

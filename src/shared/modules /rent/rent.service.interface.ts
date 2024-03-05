@@ -14,4 +14,5 @@ export interface RentService {
   findFavoriteRent(count?: number): Promise<DocumentType<RentEntity>[]>;
   findPremiumRentsByCity(city: City): Promise<DocumentType<RentEntity>[]>
   exists(rentId: string): Promise<boolean>;
+  updateCommentsCountAndRaiting(rendId: string, rating: number): Promise<DocumentType<RentEntity> | null>
 }

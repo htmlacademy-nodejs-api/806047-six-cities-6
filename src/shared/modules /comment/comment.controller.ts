@@ -16,7 +16,7 @@ export class CommentController extends BaseController {
   constructor(
     @inject(Component.Logger) protected readonly logger: Logger,
     @inject(Component.RentService) protected readonly rentService: RentService,
-    @inject(Component.CommentService) protected readonly commentService: CommentService
+    @inject(Component.CommentService) protected readonly commentService: CommentService,
   ) {
     super(logger);
     this.logger.info('Register routes for CommentController...');

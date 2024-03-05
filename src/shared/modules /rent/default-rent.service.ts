@@ -32,6 +32,15 @@ export class DefaultRentService implements RentService {
       .exec();
   }
 
+  async updateCommentsCountAndRaiting(rendId: string, rating: number) {
+    return await this.rentModel
+      .findByIdAndUpdate(rendId, { rating })
+      .findOneAndUpdate({ _id: rendId }, {
+        $inc: { commentsCount: 1 },
+      })
+      .exec();
+  }
+
   async findDescByCreateDTTM($limit = DEFAULT_RENTS_COUNT): Promise<DocumentType<RentEntity>[]> {
     return this.rentModel
       .aggregate([

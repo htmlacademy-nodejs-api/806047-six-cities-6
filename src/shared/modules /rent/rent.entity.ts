@@ -75,6 +75,12 @@ export class RentEntity extends defaultClasses.TimeStamps {
 
   @prop({ref: 'UserEntity', required: true })
   public userId: Ref<UserEntity>;
+
+  @prop({default: 0, required: false})
+  public commentsCount: number;
+
+  @prop({required: false, min: 1, max: 5})
+  public rating: number;
 }
 
 export const RentModel = getModelForClass(RentEntity);

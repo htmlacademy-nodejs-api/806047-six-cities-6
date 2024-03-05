@@ -6,9 +6,9 @@ Content-Type: application/json
   # public userType: UserType;
 
 {
-  "email": "torans@overlook2.net",
+  "email": "torans@overlook3.net",
   "name": "Jack",
-  "password": "shining",
+  "password": "qwerty123",
   "userType": "Pro"
 }
 
@@ -20,8 +20,8 @@ POST http://localhost:8080/users/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "torans@overlook2.net",
-  "password": "shining"
+  "email": "torans@overlook3.net",
+  "password": "qwerty123"
 }
 
 ###
