@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { BaseController, HttpError, HttpMethod, ValidateDtoMiddleware, ValidateObjectIdMiddleware } from '../../lib/rest/index.js';
+import { BaseController, HttpError, HttpMethod, PrivateRouteMiddleware, ValidateDtoMiddleware, ValidateObjectIdMiddleware } from '../../lib/rest/index.js';
 import { Logger } from '../../lib/logger/index.js';
 import { Component } from '../../types/index.js';
 import { Response } from 'express';
@@ -28,6 +28,7 @@ export class CommentController extends BaseController {
       method: HttpMethod.Get,
       handler: this.index,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('rentId')
       ]
     });
@@ -36,6 +37,7 @@ export class CommentController extends BaseController {
       method: HttpMethod.Post,
       handler: this.create,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('rentId'),
         new ValidateDtoMiddleware(CreateCommentDto),
       ]
@@ -59,9 +61,11 @@ export class CommentController extends BaseController {
   }
 
   public async create(
-    { body }: CreateCommentRequest,
+    { body, tokenPayload }: CreateCommentRequest,
     res: Response,
   ) {
+
+    console.log(tokenPayload);
     if(!await this.isExistingRent(body.rentId)) {
       throw new HttpError(
         StatusCodes.NOT_FOUND,
@@ -70,7 +74,9 @@ export class CommentController extends BaseController {
       );
     }
 
-    const createdComment = await this.commentService.create(body);
+    const createdComment = await this.commentService.create(
+      {...body, userId: tokenPayload.id }
+    );
 
     this.ok(res, fillDTO(CommentRdo, createdComment));
   }

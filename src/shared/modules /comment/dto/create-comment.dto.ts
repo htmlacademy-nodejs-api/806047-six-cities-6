@@ -12,7 +12,6 @@ export class CreateCommentDto {
   @Max(CommentDtoConst.MaxRating, { message: CreateCommentMessage.rating.max })
   public raiting: number;
 
-  @IsMongoId({ message: CreateCommentMessage.userId.isMongoId })
   public userId: string;
 
   @IsMongoId({ message: CreateCommentMessage.rentId.isMongoId })

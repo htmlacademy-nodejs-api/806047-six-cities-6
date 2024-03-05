@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { inject, injectable } from 'inversify';
-import { BaseController, HttpError, HttpMethod, ValidateDtoMiddleware, ValidateObjectIdMiddleware } from '../../lib/rest/index.js';
+import { BaseController, DocumentExistsMiddleware, HttpError, HttpMethod, PrivateRouteMiddleware, ValidateDtoMiddleware, ValidateObjectIdMiddleware } from '../../lib/rest/index.js';
 import { Logger } from '../../lib/logger/index.js';
 import { City, Component } from '../../types/index.js';
 import { RentService } from './rent.service.interface.js';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import {
   FindAllRentsRequestType,
   CreateRentRequestType,
@@ -37,7 +37,17 @@ export class RentController extends BaseController {
       method: HttpMethod.Post,
       handler: this.create,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateDtoMiddleware(CreateRentDto)
+      ]
+    });
+
+    this.addRoute({
+      path: '/favorites',
+      method: HttpMethod.Get,
+      handler: this.getFavorites,
+      middlewares: [
+        new PrivateRouteMiddleware(),
       ]
     });
 
@@ -45,6 +55,7 @@ export class RentController extends BaseController {
       method: HttpMethod.Get,
       handler: this.findById,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('rentId')
       ]
     });
@@ -53,6 +64,7 @@ export class RentController extends BaseController {
       method: HttpMethod.Patch,
       handler: this.update,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('rentId')
       ]
     });
@@ -61,6 +73,7 @@ export class RentController extends BaseController {
       method: HttpMethod.Delete,
       handler: this.delete,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('rentId')
       ]
     });
@@ -69,7 +82,30 @@ export class RentController extends BaseController {
       method: HttpMethod.Get,
       handler: this.findPremiumRentsByCity,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateCitydMiddleware('city')
+      ]
+    });
+
+    this.addRoute({
+      path: '/:rentId/favorite',
+      method: HttpMethod.Patch,
+      handler: this.addToFavorite,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('rentId'),
+        new DocumentExistsMiddleware(this.rentService, 'Rent', 'rentId'),
+      ]
+    });
+
+    this.addRoute({
+      path: '/:rentId/favorite',
+      method: HttpMethod.Delete,
+      handler: this.deleteOfferFromFavorite,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('rentId'),
+        new DocumentExistsMiddleware(this.rentService, 'Rent', 'rentId'),
       ]
     });
   }
@@ -168,5 +204,40 @@ export class RentController extends BaseController {
     const rentById = await this.rentService.findById(rentId);
 
     this.ok(res, fillDTO(RentRdo, rentById));
+  }
+
+  public async getFavorites({ tokenPayload }: Request, res: Response) {
+    const result = await this.rentService.findFavorite(tokenPayload.id);
+    return this.ok(res, fillDTO(RentRdo, result));
+  }
+
+  public async addToFavorite(
+    { tokenPayload, params }: Request,
+    res: Response
+  ) {
+    const { rentId } = params;
+    const user = await this.userService.findById(tokenPayload.id);
+    if (!user?.favorites.includes(rentId)) {
+
+      await this.userService.addRentToFavorites(tokenPayload.id, rentId);
+    }
+
+    const offer = await this.rentService.findById(rentId);
+
+    this.ok(res, fillDTO(RentRdo, offer));
+  }
+
+  public async deleteOfferFromFavorite(
+    { tokenPayload, params }: Request,
+    res: Response
+  ) {
+    const { rentId } = params;
+    const user = await this.userService.findById(tokenPayload.id);
+
+    if (user?.favorites.includes(rentId)) {
+      await this.userService.deleteRentFromFavorites(tokenPayload.id, rentId);
+    }
+
+    this.noContent(res, null);
   }
 }

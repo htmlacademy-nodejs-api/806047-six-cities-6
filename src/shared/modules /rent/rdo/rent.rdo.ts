@@ -22,6 +22,9 @@ export class RentRdo {
   public isPremium: boolean;
 
   @Expose()
+  public isFavorite: boolean;
+
+  @Expose()
   public rating: number;
 
   @Expose()
