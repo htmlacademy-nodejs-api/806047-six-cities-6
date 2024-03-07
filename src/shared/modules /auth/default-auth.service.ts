@@ -5,7 +5,7 @@ import { AuthService } from './auth-service.interface.js';
 import { Component } from '../../types/index.js';
 import { LoginUserDto, UserEntity, UserService } from '../user/index.js';
 import { TokenPayload } from './types/TokenPayload.js';
-import { JWT_ALGORITHM, JWT_EXPIRED } from './auth.constant.js';
+import { Jwt } from './auth.enum.js';
 import { Logger } from '../../lib/logger/index.js';
 import { Config } from 'convict';
 import { RestSchema } from '../../lib/config/rest.schema.js';
@@ -32,9 +32,9 @@ export class DefaultAuthService implements AuthService {
 
     this.logger.info(`Create token for ${user.email}`);
     return new SignJWT(tokenPayload)
-      .setProtectedHeader({ alg: JWT_ALGORITHM })
+      .setProtectedHeader({ alg: Jwt.JwtAlgorithm })
       .setIssuedAt()
-      .setExpirationTime(JWT_EXPIRED)
+      .setExpirationTime(Jwt.JwtExpired)
       .sign(secretKey);
   }
 

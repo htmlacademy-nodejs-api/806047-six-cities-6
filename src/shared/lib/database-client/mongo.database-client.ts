@@ -5,8 +5,11 @@ import { Component } from '../../types/components.emun.js';
 import { Logger } from '../logger/index.js';
 import { setTimeout } from 'node:timers/promises';
 
-const RETRY_COUNT = 5;
-const RETRY_TIMEOUT = 1000;
+
+enum MongoConnectEnum {
+  RetryCount = 5,
+  RetryTimeout = 1000
+}
 
 
 @injectable()
@@ -35,7 +38,7 @@ export class MongoDatabaseClient implements DatabaseClient {
 
     this.logger.info('Trying to connect to MongoDB…');
 
-    while(attempt < RETRY_COUNT) {
+    while(attempt < MongoConnectEnum.RetryCount) {
       try {
         this.mongoose = await Mongoose.connect(uri);
         this.isConnected = true;
@@ -47,11 +50,11 @@ export class MongoDatabaseClient implements DatabaseClient {
 
         this.logger.error(`Failed to connect to the database. Attempt ${attempt}`, error as Error);
 
-        await setTimeout(RETRY_TIMEOUT);
+        await setTimeout(MongoConnectEnum.RetryTimeout);
       }
     }
 
-    throw new Error(`Unable to establish database connection after ${RETRY_COUNT}.`);
+    throw new Error(`Unable to establish database connection after ${MongoConnectEnum.RetryTimeout}.`);
   }
 
   public async disconnect(): Promise<void> {

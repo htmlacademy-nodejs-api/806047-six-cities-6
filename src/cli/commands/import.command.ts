@@ -21,7 +21,7 @@ export class ImportCommand implements Command {
     this.logger = new PinoLogger();
     this.databaseClient = new MongoDatabaseClient(this.logger);
     this.userService = new DefaultUserService(this.logger, UserModel);
-    this.rentService = new DefaultRentService(this.logger, RentModel);
+    this.rentService = new DefaultRentService(this.logger, RentModel, this.userService);
   }
 
   public getName() {
