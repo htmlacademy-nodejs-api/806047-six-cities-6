@@ -4,9 +4,15 @@ import { RentalOfferGenerator } from './rental-offer-generator.interface.js';
 import { HousingType } from '../../types/housing-type.enum.js';
 import { Convenience } from '../../types/conveniences.enum.js';
 import { UserType } from '../../types/user-type.enum.js';
+import {
+  GenerateMockCommentsCount,
+  GenerateMockCountPassword,
+  GenerateMockGuestsCount,
+  GenerateMockPriceCount,
+  GenerateMockRatingCount,
+  GenerateMockRoomsCount
+} from './tsv-rental-offer.enum.js';
 
-const MIN_VALUE = 1;
-const MAX_VALUE = 10;
 
 export class TsvRentalOfferGenerator implements RentalOfferGenerator {
   constructor(
@@ -28,10 +34,10 @@ export class TsvRentalOfferGenerator implements RentalOfferGenerator {
     const housingType = getRandomItem(Object.keys(HousingType));
     const isPremium = getRandomBoolean();
     const isFavorite = getRandomBoolean();
-    const rating = generateRandomValue(1, 5);
-    const roomsNumber = generateRandomValue(1, 8);
-    const guestsNumber = generateRandomValue(1, 10);
-    const price = generateRandomValue(100, 100000);
+    const rating = generateRandomValue(GenerateMockRatingCount.MinValue, GenerateMockRatingCount.MaxValue);
+    const roomsNumber = generateRandomValue(GenerateMockRoomsCount.MinValue, GenerateMockRoomsCount.MaxValue);
+    const guestsNumber = generateRandomValue(GenerateMockGuestsCount.MinValue, GenerateMockGuestsCount.MaxValue);
+    const price = generateRandomValue(GenerateMockPriceCount.MinValue, GenerateMockPriceCount.MaxValue);
     const conveniences = getRandomItems(Object.keys(Convenience)).join(';');
 
     const userName = getRandomItem<string>(this.mockRentalOffer.names);
@@ -43,11 +49,11 @@ export class TsvRentalOfferGenerator implements RentalOfferGenerator {
       userName,
       userEmail,
       userAvatar,
-      password: generatePassword(generateRandomValue(MIN_VALUE, MAX_VALUE)),
+      password: generatePassword(generateRandomValue(GenerateMockCountPassword.MinValue, GenerateMockCountPassword.MaxValue)),
       userType,
     };
 
-    const commentsCount = generateRandomValue(MIN_VALUE, MAX_VALUE);
+    const commentsCount = generateRandomValue(GenerateMockCommentsCount.MinValue, GenerateMockCommentsCount.MaxValue);
 
     return [
       title, description, city, previewImage, apartmentImages,
