@@ -196,8 +196,7 @@ export class RentController extends BaseController {
     if(!isExstingRent) {
       throw new HttpError(
         StatusCodes.NOT_FOUND,
-        `Rent with id ${rentId} does not exist`,
-        'RentController',
+        `Rent with id ${rentId} does not exist`, 'RentController',
       );
     }
 
